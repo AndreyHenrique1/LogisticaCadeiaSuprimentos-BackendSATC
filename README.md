@@ -1,27 +1,8 @@
-# {{Nome do Projeto}}
+# Logistica Cadeia de Suprimentos 
 
-> **Este é o ponto de partida do projeto do grupo.** Apague este bloco antes de entregar.
->
-> **Objetivo do exercício:** planejar e organizar um backend antes de programar tudo. O grupo cria o problema e as regras de negócio, desenha o sistema, monta a estrutura de todas as entidades, faz a API funcionar com as regras implementadas e documenta tudo neste README. O enunciado completo está em `Aula 10-11/README.md`, no repositório da disciplina.
->
-> **O que fazer, na ordem:**
->
-> 1. Copie esta pasta inteira para fora do repositório da disciplina, com o nome do projeto, e publique no GitHub. Os comandos estão no enunciado (seção "Como começar pelo template").
-> 2. Procure por `TROQUE` no projeto (`pom.xml`, `docker-compose.yml`, `OpenApiConfig.java`) e coloque o nome do projeto.
-> 3. Preencha a seção [O problema](#o-problema) deste README: o problema que o grupo criou e as regras de negócio.
-> 4. Preencha `docs/modelo-de-dominio.md` e `docs/contrato-da-api.md`.
-> 5. Crie as tabelas e as classes de todas as entidades. O passo a passo está em [src/main/java/api/README.md](src/main/java/api/README.md).
-> 6. Faça a API simples e implemente as regras de negócio.
-> 7. Termine este README: troque tudo o que está entre `{{ }}` e apague o que está marcado com *(exemplo)*. Mantenha as seções e a ordem.
-> 8. Abra o repositório no GitHub, leia o README como quem nunca viu o projeto e preencha `docs/autoavaliacao.md`.
->
-> Na primeira vez que a API sobe, antes de existir tabela e rota, o Flyway avisa `No migrations found` e o Swagger UI mostra `No operations defined in spec!`. É o esperado.
->
-> Os exemplos marcados com *(exemplo)* são de uma biblioteca. O projeto completo dela está em `Aula 10-11/exemplo-biblioteca`.
+> Projeto Final da disciplina de Backend (Engenharia de Software, SATC). Etapa 1: arquitetura do backend.
 
-{{Uma ou duas frases: o que o sistema faz e para quem. Quem nunca viu o projeto tem que entender o que ele é lendo só este parágrafo.}}
-
-Projeto Final da disciplina de Backend (Engenharia de Software, SATC). **Etapa 1: arquitetura do backend.**
+Sistema de controle de estoque para logística e cadeia de suprimentos. Permite cadastrar produtos com quantidade atual e estoque mínimo, listar todos os itens cadastrados e buscar um item pelo código. A API garante que o estoque atual nunca seja menor que o estoque mínimo.
 
 ## Índice
 
@@ -37,34 +18,29 @@ Projeto Final da disciplina de Backend (Engenharia de Software, SATC). **Etapa 1
 
 ## Integrantes
 
-| Nome | GitHub |
-|---|---|
-| {{Nome completo}} | [@{{usuario}}](https://github.com/{{usuario}}) |
-| {{Nome completo}} | [@{{usuario}}](https://github.com/{{usuario}}) |
-| {{Nome completo}} | [@{{usuario}}](https://github.com/{{usuario}}) |
+| Nome |
+|---|
+| Andrey Henrique João |
+| Cauã Savi Da Silva Rosa |
+| Davi Steiner Freitas |
 
 ## O problema
 
-**Tema sorteado:** {{tema}}
+**Tema sorteado:** Logística e Cadeia de Suprimentos
 
-{{Em 3 a 5 linhas: o problema que o grupo criou dentro do tema, quem sofre com ele hoje e o que o sistema muda.}}
+O controle manual de estoque dificulta saber quando um produto está abaixo do nível mínimo necessário para continuar operando. O sistema cadastra produtos com estoque atual e estoque mínimo, impedindo que um item seja cadastrado com estoque atual menor que o mínimo, o que ajuda a evitar rupturas de estoque na cadeia de suprimentos.
 
 **Quem usa o sistema:**
 
 | Quem | O que faz no sistema |
 |---|---|
-| Bibliotecário *(exemplo)* | Cadastra livros e leitores, registra empréstimos e devoluções |
-| ... | ... |
+| Gestor de estoque | Cadastra produtos, consulta a lista de itens e busca um produto pelo código |
 
-**Regras de negócio.** No mínimo 3, criadas pelo grupo a partir do problema: o que o sistema precisa garantir ou impedir. Precisam atender à necessidade do tema e estar implementadas no código. O que só confere formato (campo obrigatório, número positivo) é validação do DTO, não regra de negócio.
+**Regras de negócio.** O grupo criou estas três regras:
 
 | # | Regra | Onde está no código | Rota que usa |
 |---|---|---|---|
-| R1 *(exemplo)* | Um leitor não pode ter mais de 3 empréstimos em aberto | `EmprestimoService` | `POST /emprestimos` |
-| R2 | ... | ... | ... |
-| R3 | ... | ... | ... |
-
-**Fora do escopo:** {{o que o grupo decidiu não fazer, para o projeto caber no semestre}}
+| R1 | O estoque atual não pode ser menor que o estoque mínimo | `ControleEstoqueService` | `POST /controle-estoque` |
 
 ## Tecnologias
 
@@ -84,15 +60,13 @@ A API é organizada em camadas. Uma requisição entra pelo Controller, passa pe
 
 | Entidade | Migration | Model | Repository | DTOs | Mapper | Service | Controller |
 |---|---|---|---|---|---|---|---|
-| Livro *(exemplo)* | `V1__criar_livros.sql`, pronta | `Livro`, pronta | `LivroRepository`, pronto | `LivroRequestDTO`, `LivroResponseDTO`, prontos | `LivroMapper`, implementado | `LivroService`, implementado | `LivroController`, implementado |
-| ... | ... | ... | ... | ... | ... | ... | ... |
+| Controle de estoque | `V1__criar_controle_estoque.sql`, pronta | `ControleEstoque`, implementada | `ControleEstoqueRepository`, pronto | `ControleEstoqueRequestDTO`, `ControleEstoqueResponseDTO`, prontos | `ControleEstoqueMapper`, implementado | `ControleEstoqueService`, implementado | `ControleEstoqueController`, implementado |
 
 ## Entidades
 
 | Entidade | O que representa | Como se relaciona |
 |---|---|---|
-| Livro *(exemplo)* | Um exemplar do acervo que pode ser emprestado | Aparece em vários empréstimos |
-| ... | ... | ... |
+| Controle de estoque | Produto com quantidade atual e estoque mínimo | Nenhuma relação nesta etapa (apenas esta entidade) |
 
 Atributos, tipos e o diagrama das tabelas estão em [docs/modelo-de-dominio.md](docs/modelo-de-dominio.md).
 
@@ -102,19 +76,20 @@ Atributos, tipos e o diagrama das tabelas estão em [docs/modelo-de-dominio.md](
 
 | Verbo | Caminho | O que faz | Regra | Sucesso | Erros |
 |---|---|---|---|---|---|
-| `POST` *(exemplo)* | `/livros` | Cadastra um livro | Nenhuma | `201` | `400` |
-| `POST` *(exemplo)* | `/emprestimos` | Registra um empréstimo | R1 e R2 | `201` | `400`, `404` |
-| ... | ... | ... | ... | ... | ... |
+| `POST` | `/controle-estoque` | Cadastra um produto no estoque | R1 | `201` | `400` |
+| `GET` | `/controle-estoque` | Lista todos os produtos do estoque | Nenhuma | `200` | Nenhum |
+| `GET` | `/controle-estoque/{codigo}` | Busca um produto pelo código | Nenhuma | `200` | `404` |
 
-Exemplo de requisição *(exemplo: troque por uma rota do grupo)*:
+Exemplo de requisição:
 
 ```http
-POST /livros
+POST /controle-estoque
 Content-Type: application/json
 
 {
-  "titulo": "Dom Casmurro",
-  "isbn": "978-85-359-0277-5"
+  "produto": "Caneta esferografica",
+  "estoqueAtual": 120,
+  "estoqueMinimo": 20
 }
 ```
 
@@ -122,24 +97,24 @@ Resposta, `201 Created`:
 
 ```json
 {
-  "id": 1,
-  "titulo": "Dom Casmurro",
-  "isbn": "978-85-359-0277-5",
-  "disponivel": true
+  "codigo": 1,
+  "produto": "Caneta esferografica",
+  "estoqueAtual": 120,
+  "estoqueMinimo": 20
 }
 ```
 
 ### Erros
 
-Todo erro sai no mesmo formato. Este é o `400` de uma regra de negócio violada *(exemplo)*:
+Todo erro sai no mesmo formato. Este é o `400` de uma regra de negócio violada:
 
 ```json
 {
   "status": 400,
   "erro": "Bad Request",
-  "mensagem": "R2: o livro já está emprestado",
-  "caminho": "/emprestimos",
-  "timestamp": "2026-10-06T19:30:00",
+  "mensagem": "R1: o estoque atual nao pode ser menor que o estoque minimo",
+  "caminho": "/controle-estoque",
+  "timestamp": "2026-10-22T16:37:40",
   "campos": []
 }
 ```
@@ -152,7 +127,8 @@ Estão no contrato, mas ainda não respondem.
 
 | Recurso | O que vai fazer |
 |---|---|
-| ... | ... |
+| Controle de frota | Cadastra veículos, motoristas, rotas e status da frota |
+| Rastreamento de entregas | Acompanha entregas, clientes, destinos e previsão |
 
 O contrato completo, com todas as rotas e os DTOs, está em [docs/contrato-da-api.md](docs/contrato-da-api.md).
 
@@ -161,8 +137,6 @@ O contrato completo, com todas as rotas e os DTOs, está em [docs/contrato-da-ap
 Pré-requisitos: JDK 25, Docker Desktop aberto e Git.
 
 ```bash
-git clone https://github.com/{{usuario}}/{{repositorio}}.git
-cd {{repositorio}}
 
 docker compose up -d          # sobe o PostgreSQL na porta 5437
 ./mvnw spring-boot:run        # Windows: .\mvnw.cmd spring-boot:run
@@ -183,11 +157,9 @@ Para parar: `Ctrl+C` na API e `docker compose stop` no banco. Para apagar o banc
 
 | Parte | Situação |
 |---|---|
-| Desenho | {{ex.: completo: problema e regras neste README, modelo e contrato em docs/}} |
-| Estrutura | {{ex.: as 3 entidades têm migration, entidade, Repository, DTOs, Mapper, Service e Controller}} |
-| API e regras | {{ex.: as rotas de livros funcionam; R1, R2 e R3 estão implementadas}} |
-
-**Ainda não funciona:** {{as rotas planejadas que ainda não respondem}}
+| Desenho | Completo: problema e regras neste README, modelo e contrato emdocs/ |
+| Estrutura | a entidade controle de estoque tem migration, entidade, Repository, DTOs, Mapper, Service e Controller |
+| API e regras | as rotas de controle de estoque funcionam;|
 
 ## Documentação
 
